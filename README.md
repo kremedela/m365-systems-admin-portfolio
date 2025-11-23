@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-<!-- ================================================== -->
-<!-- BANNER PLACEHOLDER -->
+
 <p align='center'>
   <img src='banner.png' alt='Euron Pennyman — Microsoft 365 Systems Administrator Banner' width='100%'>
 </p>
@@ -58,7 +56,7 @@ m365-systems-admin-portfolio
 </p>
 
 <p align='center'>
-  <sub>© 2025 — John D. Parker • Microsoft 365 Systems Administrator Portfolio • Built with ❤️ and PowerShell</sub>
+  <sub>© 2025 — Euron Pennyman • Microsoft 365 Systems Administrator Portfolio • Built with ❤️ and PowerShell</sub>
 </p>
 =======
 # m365-systems-admin-portfolio
