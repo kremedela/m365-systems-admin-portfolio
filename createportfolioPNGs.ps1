@@ -1,14 +1,11 @@
 # ==================================================
 # M365 Portfolio Creator for Euron Pennyman
 # ==================================================
-Add-Type -AssemblyName System.Drawing
 
 # -----------------------------
 # Paths
 # -----------------------------
 $repoPath = "C:\Users\Star Wars\Documents\m365-systems-admin-portfolio"
-$bannerPath = Join-Path $repoPath "banner.png"
-$archPath = Join-Path $repoPath "architecture-dark.png"
 $readmeFile = Join-Path $repoPath "README.md"
 
 # Create portfolio folder if missing
@@ -31,166 +28,177 @@ foreach ($folder in $folders) {
 }
 
 # -----------------------------
-# Function to create PNGs
+# Function to generate skill bars
 # -----------------------------
-function Create-PNG {
+function Get-SkillBar {
     param(
-        [string]$Path,
-        [int]$Width,
-        [int]$Height,
-        [string]$Text = "",
-        [switch]$AddCloudIcons,
-        [switch]$DrawArchitecture
+        [int]$Level # 1-5
     )
+    $filled = "🟩" * $Level
+    $empty = "⬜" * (5 - $Level)
+    return "$filled$empty"
+}
 
-    $bmp = New-Object System.Drawing.Bitmap $Width, $Height
-    $graphics = [System.Drawing.Graphics]::FromImage($bmp)
-    $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+# Generate skill bar table
+$skills = @(
+    @{ Name="Exchange Hybrid"; Level=4; Evidence="Hybrid-Lab" },
+    @{ Name="Teams Governance"; Level=4; Evidence="Teams-Governance" },
+    @{ Name="Intune"; Level=3; Evidence="Intune-SCCM" },
+    @{ Name="SCCM"; Level=3; Evidence="Intune-SCCM" },
+    @{ Name="PowerShell Automation"; Level=4; Evidence="PowerShell-Automation" },
+    @{ Name="Entra ID / Azure AD"; Level=4; Evidence="Hybrid-Lab" },
+    @{ Name="Conditional Access"; Level=3; Evidence="Security-Compliance" },
+    @{ Name="PKI & Certificates"; Level=3; Evidence="Security-Compliance" },
+    @{ Name="Security & Compliance"; Level=4; Evidence="Security-Compliance" }
+)
 
-    # Gradient background
-    $rect = New-Object System.Drawing.Rectangle(0,0,$Width,$Height)
-    $brush = New-Object System.Drawing.Drawing2D.LinearGradientBrush($rect,
-        [System.Drawing.Color]::FromArgb(13,17,23),
-        [System.Drawing.Color]::FromArgb(31,41,55),
-        [System.Drawing.Drawing2D.LinearGradientMode]::Horizontal)
-    $graphics.FillRectangle($brush, $rect)
-
-    # Draw banner text
-    if ($Text -ne "") {
-        $font = New-Object System.Drawing.Font("Segoe UI",48,[System.Drawing.FontStyle]::Bold)
-        $brushText = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-        $size = $graphics.MeasureString($Text,$font)
-        $x = ($Width - $size.Width)/2
-        $y = ($Height - $size.Height)/2
-        $graphics.DrawString($Text,$font,$brushText,$x,$y)
-    }
-
-    # Optional cloud icons
-    if ($AddCloudIcons) {
-        $cloudFont = New-Object System.Drawing.Font("Segoe UI Emoji",48)
-        $graphics.DrawString("☁️",$cloudFont,$brushText,50,($Height/2)-24)
-        $graphics.DrawString("☁️",$cloudFont,$brushText,$Width-120,($Height/2)-24)
-    }
-
-    # Optional architecture diagram
-    if ($DrawArchitecture) {
-        $pen = New-Object System.Drawing.Pen([System.Drawing.Color]::White,2)
-        $fontBox = New-Object System.Drawing.Font("Segoe UI",16,[System.Drawing.FontStyle]::Bold)
-        $fontArrow = New-Object System.Drawing.Font("Segoe UI",12)
-
-        # Cloud boxes
-        $cloudComponents = @("Exchange Online","Teams","SharePoint","OneDrive")
-        $xStart = 250; $yStart = 50; $boxWidth = 250; $boxHeight = 70; $gap = 20
-        foreach ($comp in $cloudComponents) {
-            $graphics.FillRectangle((New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(40,50,100,150))), $xStart, $yStart, $boxWidth, $boxHeight)
-            $graphics.DrawRectangle($pen, $xStart, $yStart, $boxWidth, $boxHeight)
-            $graphics.DrawString($comp, $fontBox, [System.Drawing.Brushes]::White, $xStart+10, $yStart+20)
-            $xStart += $boxWidth + $gap
-        }
-
-        # On-prem boxes
-        $onPremComponents = @("AD DS / DNS / DHCP","Exchange 2019","SCCM/MECM")
-        $xStart = 350; $yStart = 300; $boxWidth = 200; $boxHeight = 60; $gap = 30
-        foreach ($comp in $onPremComponents) {
-            $graphics.FillRectangle((New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(40,100,50,50))), $xStart, $yStart, $boxWidth, $boxHeight)
-            $graphics.DrawRectangle($pen, $xStart, $yStart, $boxWidth, $boxHeight)
-            $graphics.DrawString($comp, $fontBox, [System.Drawing.Brushes]::White, $xStart+10, $yStart+15)
-            $xStart += $boxWidth + $gap
-        }
-
-        # Arrows
-        $arrowPen = New-Object System.Drawing.Pen([System.Drawing.Color]::White,3)
-        $arrowPen.CustomEndCap = New-Object System.Drawing.Drawing2D.AdjustableArrowCap(5,5)
-        $graphics.DrawLine($arrowPen, 400, 360, 300, 100)
-        $graphics.DrawLine($arrowPen, 600, 360, 500, 100)
-        $graphics.DrawLine($arrowPen, 800, 360, 700, 100)
-        $graphics.DrawString("AAD Connect / Mail Flow", $fontArrow, [System.Drawing.Brushes]::White, 500, 250)
-    }
-
-    $bmp.Save($Path,[System.Drawing.Imaging.ImageFormat]::Png)
-    $graphics.Dispose()
-    $bmp.Dispose()
-    Write-Host "Created PNG: $Path"
+$skillTable = "| Skill | Proficiency | Evidence |`n|-------|------------|---------|`n"
+foreach ($s in $skills) {
+    $bar = Get-SkillBar -Level $s.Level
+    $skillTable += "| $($s.Name) | $bar | $($s.Evidence) |`n"
 }
 
 # -----------------------------
-# Create banner
-# -----------------------------
-Create-PNG -Path $bannerPath -Width 1600 -Height 400 -Text "Euron Pennyman - M365 Systems Administrator" -AddCloudIcons
-
-# -----------------------------
-# Create architecture diagram
-# -----------------------------
-Create-PNG -Path $archPath -Width 1200 -Height 600 -DrawArchitecture
-
-# -----------------------------
-# Create README.md
+# Create README.md content
 # -----------------------------
 $readmeContent = @"
-<!-- ================================================== -->
-<!-- BANNER PLACEHOLDER -->
-<p align='center'>
-  <img src='banner.png' alt='Euron Pennyman — Microsoft 365 Systems Administrator Banner' width='100%'>
-</p>
-
-<!-- BADGES -->
-<div align='center'>
-![PowerShell](https://img.shields.io/badge/PowerShell-Automation-5391FE?logo=powershell&logoColor=white)
-![Microsoft365](https://img.shields.io/badge/Microsoft%20365-Expert-EB3C00?logo=microsoft&logoColor=white)
-![AzureAD](https://img.shields.io/badge/Entra%20ID%20(Azure%20AD)-Identity%20Mgmt-0078D4?logo=microsoftazure&logoColor=white)
-![Intune](https://img.shields.io/badge/Intune-Device%20Mgmt-5E5E5E?logo=microsoft&logoColor=white)
-![SCCM](https://img.shields.io/badge/SCCM%2FMECM-Enterprise%20Mgmt-00695C)
-![Security](https://img.shields.io/badge/Security-Compliance%20%26%20Zero%20Trust-CC0000)
-![Teams](https://img.shields.io/badge/Microsoft%20Teams-Governance-4B53BC?logo=microsoftteams&logoColor=white)
-</div>
-
 # ✨ Euron Pennyman — Microsoft 365 Systems Administrator Portfolio
 
-Welcome to my **enterprise-ready Microsoft 365 portfolio**, showcasing hands-on experience with:
-
-- 🔄 **Exchange Hybrid**  
-- 📡 **Teams Governance**  
-- 🖥 **Intune + SCCM Endpoint Management**  
-- ⚙️ **PowerShell Automation**  
-- 🛡 **Security + Compliance**  
-- ☁️ **Entra ID (Azure AD)**
+<p align='center'>
+  <img src='https://img.shields.io/badge/Microsoft%20365-Expert-EB3C00?logo=microsoft&logoColor=white' />
+  <img src='https://img.shields.io/badge/PowerShell-Automation-5391FE?logo=powershell&logoColor=white' />
+  <img src='https://img.shields.io/badge/Entra%20ID-Azure%20AD-0078D4?logo=microsoftazure&logoColor=white' />
+  <img src='https://img.shields.io/badge/Intune-Device%20Mgmt-5E5E5E?logo=microsoft&logoColor=white' />
+  <img src='https://img.shields.io/badge/SCCM/MECM-Enterprise%20Mgmt-00695C' />
+  <img src='https://img.shields.io/badge/Security-Zero%20Trust-CC0000' />
+  <img src='https://img.shields.io/badge/Teams-Governance-4B53BC?logo=microsoftteams&logoColor=white' />
+</p>
 
 ---
 
-# 🖼 Architecture Diagram (Dark Mode / PNG)
-<p align='center'>
-  <img src='architecture-dark.png' width='90%' alt='Dark Mode Hybrid Architecture Diagram'>
-</p>
+## 👋 About Me
 
-# 🌐 Repository Structure
+Hi! I’m **Euron Pennyman**, a **Microsoft 365 Systems Administrator** with hands-on experience in hybrid Exchange, Teams governance, endpoint management, Intune/SCCM, PowerShell automation, and security compliance.  
+
+I build enterprise-ready environments that are secure, scalable, and fun to work with! ☁️💻🛡
+
+---
+
+## 🧩 Skills & Proficiency
+
+$skillTable
+
+---
+
+## 🌐 Portfolio Structure
+
+<details>
+<summary>Click to expand folder structure 📂</summary>
+
 \`\`\`
-m365-systems-admin-portfolio
+m365-systems-admin-portfolio/
 ├── Hybrid-Lab/
+│   ├── Exchange Hybrid Setup
+│   ├── AD DS & Azure AD Connect
+│   └── PKI & Certificate Authority
 ├── Teams-Governance/
+│   ├── Naming Conventions
+│   ├── Meeting & Messaging Policies
+│   ├── Guest Access Governance
+│   └── PowerShell Reporting
 ├── Intune-SCCM/
+│   ├── Device Compliance Policies
+│   ├── App Deployment
+│   ├── Windows Update Rings
+│   └── Co-Management Scripts
 ├── PowerShell-Automation/
+│   ├── User Provisioning
+│   ├── License Assignment
+│   ├── EXO Mailbox Scripts
+│   └── Graph API Reporting
 └── Security-Compliance/
+    ├── Zero Trust Architecture
+    ├── Conditional Access Policies
+    ├── CIS Benchmarks
+    └── DLP & Sensitivity Labels
 \`\`\`
 
-# 🔗 Contact
-<p align='center'>
-<a href='mailto:your-euron.pennyman@midnightmoonlight.com'>
-  <img src='https://img.shields.io/badge/Email-Contact%20Me-blue?logo=gmail&logoColor=white' />
-</a>
-<a href='https://www.linkedin.com/in/euron-pennyman-499018376/'>
-  <img src='https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin&logoColor=white' />
-</a>
-<a href='https://github.com/kremedela/m365-systems-admin-portfolio'>
-  <img src='https://img.shields.io/badge/GitHub-Profile-black?logo=github' />
-</a>
+</details>
+
+---
+
+## 🚀 Highlighted Projects
+
+<details>
+<summary>Exchange Hybrid & Identity Sync</summary>
+
+- On-premises Exchange 2019 configured in hybrid mode with Exchange Online  
+- Mail routing, retention policies, transport rules  
+- Azure AD Connect for identity sync and Single Sign-On  
+- PKI and certificate authority configuration  
+- Automated provisioning and mailbox reports via PowerShell  
+
+</details>
+
+<details>
+<summary>Teams Governance & Automation</summary>
+
+- Enforced naming conventions, meeting policies, and guest access  
+- Team lifecycle automation via PowerShell  
+- Reporting dashboards for active teams, owners, and guests  
+
+</details>
+
+<details>
+<summary>Intune & SCCM Endpoint Management</summary>
+
+- Device compliance policies and update rings  
+- Application deployment via Intune and SCCM  
+- Co-management strategies for hybrid environments  
+- Reporting scripts for inventory and updates  
+
+</details>
+
+<details>
+<summary>Security & Compliance</summary>
+
+- Zero Trust architecture applied to Microsoft 365 environment  
+- Conditional Access policies and multi-factor authentication  
+- CIS benchmark hardening for Windows servers  
+- DLP, sensitivity labeling, and audit logging  
+
+</details>
+
+---
+
+## 🌟 Fun Features
+
+- Fully interactive folder and project previews using `<details>`  
+- 🟩🟨⬜ colored skill bars for visual dashboard  
+- ☁️ Cloud-themed emojis highlighting cloud technologies  
+
+---
+
+## 🔗 Contact & Connect
+
+<p align="center">
+  <a href="mailto:euron.pennyman@midnightmoonlight.com">
+    <img src="https://img.shields.io/badge/Email-Contact%20Me-blue?logo=gmail&logoColor=white" />
+  </a>
+  <a href="https://www.linkedin.com/in/euron-pennyman-499018376/">
+    <img src="https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin&logoColor=white" />
+  </a>
+  <a href="https://github.com/kremedela/m365-systems-admin-portfolio">
+    <img src="https://img.shields.io/badge/GitHub-Profile-black?logo=github" />
+  </a>
 </p>
 
-<p align='center'>
+<p align="center">
   <sub>© 2025 — Euron Pennyman • Microsoft 365 Systems Administrator Portfolio • Built with ❤️ and PowerShell</sub>
 </p>
 "@
 
+# Write README.md
 Set-Content -Path $readmeFile -Value $readmeContent -Force
-Write-Host "README.md created successfully at $readmeFile"
+Write-Host "✅ README.md created successfully at $readmeFile"
 
-Write-Host "`n✅ Portfolio setup complete! PNGs, folders, and README are ready."
