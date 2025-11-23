@@ -118,14 +118,6 @@ m365-systems-admin-portfolio/
 
 ---
 
-## 🌟 Fun Features
-
-- Fully interactive folder and project previews using <details>  
-- 🟩🟨⬜ colored skill bars for visual dashboard  
-- ☁️ Cloud-themed emojis highlighting cloud technologies  
-
----
-
 ## 🔗 Contact & Connect
 
 <p align="center">
