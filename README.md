@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- ================================================== -->
 <!-- BANNER PLACEHOLDER -->
 <p align='center'>
@@ -59,3 +60,6 @@ m365-systems-admin-portfolio
 <p align='center'>
   <sub>© 2025 — John D. Parker • Microsoft 365 Systems Administrator Portfolio • Built with ❤️ and PowerShell</sub>
 </p>
+=======
+# m365-systems-admin-portfolio
+>>>>>>> 967bf37c6af84f00bd65b218d2b86c35c8dde5b3
