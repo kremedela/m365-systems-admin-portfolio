@@ -1,4 +1,5 @@
-
+<!-- ================================================== -->
+<!-- BANNER PLACEHOLDER -->
 <p align='center'>
   <img src='banner.png' alt='Euron Pennyman — Microsoft 365 Systems Administrator Banner' width='100%'>
 </p>
@@ -50,7 +51,7 @@ m365-systems-admin-portfolio
 <a href='https://www.linkedin.com/in/euron-pennyman-499018376/'>
   <img src='https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin&logoColor=white' />
 </a>
-<a href='https://github.com/kremedela/m365-systems-admin-portfolio.git'>
+<a href='https://github.com/kremedela/m365-systems-admin-portfolio'>
   <img src='https://img.shields.io/badge/GitHub-Profile-black?logo=github' />
 </a>
 </p>
@@ -58,6 +59,3 @@ m365-systems-admin-portfolio
 <p align='center'>
   <sub>© 2025 — Euron Pennyman • Microsoft 365 Systems Administrator Portfolio • Built with ❤️ and PowerShell</sub>
 </p>
-=======
-# m365-systems-admin-portfolio
->>>>>>> 967bf37c6af84f00bd65b218d2b86c35c8dde5b3

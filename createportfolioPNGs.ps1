@@ -1,5 +1,5 @@
 # ==================================================
-# M365 Portfolio Creator (Fully Compatible)
+# M365 Portfolio Creator for Euron Pennyman
 # ==================================================
 Add-Type -AssemblyName System.Drawing
 
@@ -57,7 +57,7 @@ function Create-PNG {
 
     # Draw banner text
     if ($Text -ne "") {
-        $font = New-Object System.Drawing.Font("Segoe UI",64,[System.Drawing.FontStyle]::Bold)
+        $font = New-Object System.Drawing.Font("Segoe UI",48,[System.Drawing.FontStyle]::Bold)
         $brushText = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
         $size = $graphics.MeasureString($Text,$font)
         $x = ($Width - $size.Width)/2
@@ -116,7 +116,7 @@ function Create-PNG {
 # -----------------------------
 # Create banner
 # -----------------------------
-Create-PNG -Path $bannerPath -Width 1600 -Height 400 -Text "John D. Parker - M365 Systems Administrator" -AddCloudIcons
+Create-PNG -Path $bannerPath -Width 1600 -Height 400 -Text "Euron Pennyman - M365 Systems Administrator" -AddCloudIcons
 
 # -----------------------------
 # Create architecture diagram
@@ -180,13 +180,13 @@ m365-systems-admin-portfolio
 <a href='https://www.linkedin.com/in/euron-pennyman-499018376/'>
   <img src='https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin&logoColor=white' />
 </a>
-<a href='https://github.com/kremedela/m365-systems-admin-portfolio.git'>
+<a href='https://github.com/kremedela/m365-systems-admin-portfolio'>
   <img src='https://img.shields.io/badge/GitHub-Profile-black?logo=github' />
 </a>
 </p>
 
 <p align='center'>
-  <sub>© 2025 — John D. Parker • Microsoft 365 Systems Administrator Portfolio • Built with ❤️ and PowerShell</sub>
+  <sub>© 2025 — Euron Pennyman • Microsoft 365 Systems Administrator Portfolio • Built with ❤️ and PowerShell</sub>
 </p>
 "@
 
@@ -194,4 +194,3 @@ Set-Content -Path $readmeFile -Value $readmeContent -Force
 Write-Host "README.md created successfully at $readmeFile"
 
 Write-Host "`n✅ Portfolio setup complete! PNGs, folders, and README are ready."
-
